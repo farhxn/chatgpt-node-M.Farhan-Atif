@@ -1,0 +1,86 @@
+import  express  from 'express';
+import * as dotenv from 'dotenv';
+import cors from 'cors';
+import jwt from 'jsonwebtoken';
+// const got = require('got');
+import got from 'got';
+
+
+import { Configuration , OpenAIApi} from 'openai';
+
+dotenv.config();
+
+//console.log(process.env.OPENAI_API_KEY);
+
+const configuration = new Configuration({
+    apikey : process.env.OPENAI_API_KEY,  
+}); 
+
+const openai = new OpenAIApi(configuration);
+
+const app = express();
+app.use(cors()); 
+app.use(express.json());
+
+
+
+
+app.get('/',async(req,res)=>{
+    // res.status(200).send({
+    //     message:"Hello From Farhan",
+    // })
+    //Mock user
+
+});
+
+app.post('/', async(req, res) => { 
+    const prompt = req.body.prompt; 
+    //     console.log(prompt);    
+    (async () => {
+        const url = 'https://api.openai.com/v1/engines/text-davinci-003/completions';
+        const params = {
+            prompt: `${prompt}`,
+          "max_tokens": 160,
+          "temperature": 0.7,
+          "frequency_penalty": 0.5
+        };
+        const headers = {
+          'Authorization': `Bearer ${process.env.OPENAI_SECRET_KEY}`,
+        };
+      
+        try {
+          const response = await got.post(url, { json: params, headers: headers }).json();
+          let output = `${response.choices[0].text}`;
+          res.json(output);
+        } catch (err) {
+          console.log(err);
+        }
+      })();
+
+
+
+
+    // try{
+    //     const prompt = req.body.prompt; 
+    //     console.log(prompt);
+    //     const response = await openai.createCompletion({
+    //         model: "text-davinci-003",
+    //         prompt: `${prompt}`,
+    //         temperature: 0,
+    //         max_tokens: 3000,
+    //         top_p: 1,
+    //         frequency_penalty: 0.5,
+    //         presence_penalty: 0,     
+          
+    //     });
+        
+    //     res.status(200).send({
+    //         bot: response.data.choices[0].text
+    //     })
+    // }catch (error){
+    //     console.log(error);
+    //     res.status(500).send({error})
+    // } 
+})
+
+app.listen(5000, () => console.log('server is running on port: http://localhost:5000'));

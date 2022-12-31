@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "express-bearer-token": "^2.4.0",
+    "got": "^11.8.0",
+    "jsonwebtoken": "^9.0.0",
+    "request": "^2.88.2"
+  }
+}
